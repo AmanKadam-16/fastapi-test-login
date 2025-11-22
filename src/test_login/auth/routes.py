@@ -223,8 +223,8 @@ async def reset_password(data: ResetPasswordRequest, db: AsyncSession = Depends(
         raise HTTPException(status_code=400, detail="User not found")
 
     # Update password
-    hashed_password = hash_password(data.password)
-    user.password = hashed_password
+    hashed_password = hash_password(data.new_password)
+    user.password_hash = hashed_password
 
     await db.commit()
 
