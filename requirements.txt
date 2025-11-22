@@ -4,6 +4,6 @@ sqlalchemy
 asyncpg
 aiosqlite
 python-jose
-passlib[bcrypt]
+passlib[argon2-cffi]
 pydantic
 python-dotenv
