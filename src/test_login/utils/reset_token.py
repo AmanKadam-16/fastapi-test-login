@@ -3,7 +3,7 @@ from jose import jwt
 import os
 from dotenv import load_dotenv
 load_dotenv()
-RESET_SECRET = os.getenv("RESET_PASSWORD_SECRET")
+RESET_SECRET = os.getenv("RESET_PASSWORD_SECRET","RESET_SECRET")
 RESET_EXPIRE = int(os.getenv("RESET_PASSWORD_EXPIRE_MINUTES", 30))
 
 def create_reset_token(email: str):
