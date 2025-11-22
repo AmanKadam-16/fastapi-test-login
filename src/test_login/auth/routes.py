@@ -206,3 +206,26 @@ async def update_password(
         "error_message": "",
         "is_error": False
     }
+
+@router.post("/reset-password")
+async def reset_password(data: ResetPasswordRequest, db: AsyncSession = Depends(get_db)):
+    try:
+        email = verify_reset_token(data.token)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+
+    # Fetch user
+    stmt = select(User).where(User.email == email)
+    result = await db.execute(stmt)
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found")
+
+    # Update password
+    hashed_password = hash_password(data.password)
+    user.password = hashed_password
+
+    await db.commit()
+
+    return {"message": "Password reset successful"}
