@@ -1,13 +1,32 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from src.test_login.database import SessionLocal
-from src.test_login.utils.password import hash_password
+
+import os
+
+from src.test_login.database import get_db
 from src.test_login.models import User
-from src.test_login.schemas import LoginRequest, RefreshRequest, ForgotPasswordRequest, SignupRequest, UpdatePasswordRequest
-from src.test_login.utils.password import verify_password
+from src.test_login.utils.password import hash_password, verify_password
+from src.test_login.utils.reset_token import create_reset_token, verify_reset_token
+from src.test_login.utils.email_service import send_reset_email
 from src.test_login.auth.deps import get_current_user
+from src.test_login.schemas import (
+    ForgotPasswordRequest,
+    SignupRequest,
+    ResetPasswordRequest,
+    UpdatePasswordRequest,
+    LoginRequest,
+    RefreshRequest,
+)
+from src.test_login.database import SessionLocal
+# JWT helpers (make sure jwt_handler.py exports these)
 from src.test_login.auth.jwt_handler import (
-    create_access_token, create_refresh_token, verify_refresh_token)
+    create_access_token,
+    create_refresh_token,
+    verify_refresh_token,
+)
+
+
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
@@ -88,15 +107,45 @@ async def refresh_token(payload: RefreshRequest):
 
 # ---------------- FORGOT PASSWORD (DUMMY) ----------------
 @router.post("/forgot-password")
-async def forgot_password(payload: ForgotPasswordRequest):
+async def forgot_password(
+    payload: ForgotPasswordRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    # 1. Find user by email
+    result = await db.execute(select(User).where(User.email == payload.email))
+    user = result.scalar_one_or_none()
+
+    # Always return success to avoid email enumeration
+    if not user:
+        return {
+            "data": {
+                "response": None,
+                "success_message": "Reset link has been sent to your email. \n Check Inbox or Spam if mail not found then."
+            },
+            "error_message": "",
+            "is_error": False
+        }
+
+    # 2. Create reset token
+    token = create_reset_token(user.email)
+
+    # 3. Build reset URL
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+    reset_link = f"{frontend_url}/reset-password?token={token}"
+
+    # 4. Send email through Mailjet
+    mail_response = send_reset_email(user.email, reset_link)
+
     return {
         "data": {
             "response": None,
-            "success_message": f"Password reset link sent to {payload.email} (dummy)"
+            "success_message": "Reset link has been sent to your email. \n Check Inbox or Spam if mail not found then."
         },
+        "meta": {"mailjet_status": getattr(mail_response, "status_code", None)},
         "error_message": "",
         "is_error": False
     }
+
 
 @router.post("/signup")
 async def signup(payload: SignupRequest):
