@@ -235,4 +235,4 @@ async def update_password(
     user: User = Depends(get_current_user)
 ):
 
-    return {"message": "Password reset successful"}
+    return {"message": "Hey Greetings from ElectroSoft..!!!"}
