@@ -229,3 +229,10 @@ async def reset_password(data: ResetPasswordRequest, db: AsyncSession = Depends(
     await db.commit()
 
     return {"message": "Password reset successful"}
+
+@router.get("/greet")
+async def update_password(
+    user: User = Depends(get_current_user)
+):
+
+    return {"message": "Password reset successful"}
