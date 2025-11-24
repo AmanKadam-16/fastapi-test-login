@@ -64,7 +64,7 @@ async def login(payload: LoginRequest):
                     "login_type": "electrosoft",
                     "app_config": {
                         "preferences": {"color_theme_id": "olive"},
-                        "app_logo_url": "https://dummy.logo"
+                        "app_logo_url": "https://res.cloudinary.com/dsr9ybg3q/image/upload/v1764003552/logoipsum-225_qmbtqn.png"
                     }
                 },
                 "success_message": "Login successful."
