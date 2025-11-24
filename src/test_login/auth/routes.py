@@ -130,8 +130,8 @@ async def forgot_password(
     token = create_reset_token(user.email)
 
     # 3. Build reset URL
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
-    reset_link = f"{frontend_url}/reset-password?token={token}"
+    frontend_url = os.getenv("FRONTEND_URL", "ttps://27z9tjx9-5173.inc1.devtunnels.ms")
+    reset_link = f"{frontend_url}/change/{token}"
 
     # 4. Send email through Mailjet
     mail_response = send_reset_email(user.email, reset_link)
