@@ -10,3 +10,4 @@ python-dotenv
 argon2-cffi
 mailjet-rest
 pydantic[email]
+mangum
