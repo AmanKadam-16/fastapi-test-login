@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+import time
 from sqlalchemy import select
 
 import os
@@ -236,3 +237,115 @@ async def update_password(
 ):
 
     return {"message": "Hey Greetings from ElectroSoft..!!!"}
+
+
+
+@router.get("/get-bills")
+async def update_password(
+    user: User = Depends(get_current_user)
+):
+    response = [
+    {
+        "meter_id": "101",
+        "amount": "4500",
+        "date": "01-11-2025"
+    },
+    {
+        "meter_id": "102",
+        "amount": "12500",
+        "date": "01-11-2025"
+    },
+    {
+        "meter_id": "103",
+        "amount": "890",
+        "date": "02-11-2025"
+    },
+    {
+        "meter_id": "104",
+        "amount": "67000",
+        "date": "03-11-2025"
+    },
+    {
+        "meter_id": "105",
+        "amount": "2340",
+        "date": "04-11-2025"
+    },
+    {
+        "meter_id": "106",
+        "amount": "15000",
+        "date": "05-11-2025"
+    },
+    {
+        "meter_id": "107",
+        "amount": "780",
+        "date": "06-11-2025"
+    },
+    {
+        "meter_id": "108",
+        "amount": "5600",
+        "date": "07-11-2025"
+    },
+    {
+        "meter_id": "109",
+        "amount": "9200",
+        "date": "08-11-2025"
+    },
+    {
+        "meter_id": "110",
+        "amount": "1100",
+        "date": "09-11-2025"
+    },
+    {
+        "meter_id": "111",
+        "amount": "45000",
+        "date": "10-11-2025"
+    },
+    {
+        "meter_id": "112",
+        "amount": "3200",
+        "date": "11-11-2025"
+    },
+    {
+        "meter_id": "113",
+        "amount": "650",
+        "date": "12-11-2025"
+    },
+    {
+        "meter_id": "114",
+        "amount": "8800",
+        "date": "13-11-2025"
+    },
+    {
+        "meter_id": "115",
+        "amount": "19500",
+        "date": "14-11-2025"
+    },
+    {
+        "meter_id": "116",
+        "amount": "2100",
+        "date": "15-11-2025"
+    },
+    {
+        "meter_id": "117",
+        "amount": "5400",
+        "date": "16-11-2025"
+    },
+    {
+        "meter_id": "118",
+        "amount": "990",
+        "date": "17-11-2025"
+    },
+    {
+        "meter_id": "119",
+        "amount": "76000",
+        "date": "18-11-2025"
+    },
+    {
+        "meter_id": "120",
+        "amount": "3450",
+        "date": "19-11-2025"
+    }
+    ]
+    time.sleep(10)
+    
+    return {"bills_list": response}
